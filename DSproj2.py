@@ -159,7 +159,9 @@ def legalitycheck(text):
         scorearr.append(score)
     # removing illegal sequences if any
     if len(ind)!=0:
-        rmvIllegal(ind)    
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        rmvIllegal(ind)  
+        print(scorearr)
     return count
 
 # adding more sequences to compensate for the removed sequences
