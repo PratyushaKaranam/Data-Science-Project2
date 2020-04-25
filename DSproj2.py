@@ -89,7 +89,7 @@ def getScore(matr,matr_angle,matr_visited):
                     if(matr[i+1][j]=='H' and matr_angle[i+1][j]!=270 and matr_visited[i+1][j]!=2):
                         sco = sco+1
                     matr_visited[i][j] = 2
-        print("score=",sco)
+        #print("score=",sco)
         return sco
                     
 
@@ -131,7 +131,7 @@ def legalitycheck(text):
         matr_angle[x][y]=curr_ang
         matr[x][y] = sequence[0]
         #print(x,y)
-        print("------------------------------")
+        #print("------------------------------")
         #print(matr_visited)
         #print("\n")
         for j in range(len(text[i])):
@@ -155,7 +155,7 @@ def legalitycheck(text):
                 matr[x][y]=sequence[j+1]
             elif(matr_visited[x][y]==1):
                 ind.append(i)
-                print("collision at",i)
+                #print("collision at",i)
                 count = count + 1
                 break
         #print(matr_angle)
@@ -169,16 +169,54 @@ def legalitycheck(text):
 # adding more sequences to compensate for the removed sequences
 cnt = legalitycheck(text)
 while(cnt>0):
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     rmvIllegal(ind,text)
     ind = []
     sequencegenerator(cnt)
     cnt = legalitycheck(text)
     
-    
+print(text)  
+print("\n")
 #Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
 scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
 maxscore.append(scorearr[0])
+
+# Mutation
+p = 0.001   
+p1=p
+p2=int(p1)
+c=0
+while(p2==0):
+    p1=p1*10;
+    c=c+1  
+    p2=int(p1) 
+prob1={'F':p,'R':p}
+prob2={'L':p,'R':p}
+prob3={'L':p,'F':p}
+
+def mutation(seq):
+    s=[]
+    for i in seq:
+        if i=='L':
+            pick1=[]
+            for key, x in prob1.items():
+                pick1.extend([key]*int(x*pow(10,c)))
+            sub="".join(random.choice(pick1))
+        if i=='F':
+            pick2=[]
+            for key, x in prob2.items():
+                pick2.extend([key]*int(x*pow(10,c)))
+            sub="".join(random.choice(pick2))
+        if i=='R':
+            pick3=[]
+            for key, x in prob3.items():
+                pick3.extend([key]*int(x*pow(10,c)))
+            sub="".join(random.choice(pick3))
+        s.append(sub)
+    str=""
+    for i in s:
+        str += i
+    return str
 
 
 # crossover and selection
@@ -195,7 +233,7 @@ def crossoverAndSelection(n):
             newtext.append(newt)
         cnt = legalitycheck(newtext) 
         if len(ind)!=0:
-            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             rmvIllegal(ind,newtext)  
         else:
             for i in range(len(scorearr)):
@@ -211,7 +249,7 @@ def crossoverAndSelection(n):
                 text1.append(newtext[i])
         for i in range(len(text)-x):
             text1.append(text[i])
-        cnt = legalitycheck(text1)
+        #cnt = legalitycheck(text1)
 
         #scorearr, text1 = (list(t) for t in zip(*sorted(zip(scorearr, text1), reverse=True)))
         #maxscore.append(scorearr[0])
@@ -222,7 +260,31 @@ def crossoverAndSelection(n):
         
         for i in text1:
             text.append(i)
-        print(text1)
+        #print(text)
+        #print("\n")
+        for q in range(len(text)):
+            l = mutation(text[q])
+            text.pop(q)
+            text.insert(q,l)
+        cnt = legalitycheck(text)
+        while(cnt>0):
+            ind.reverse()
+            for r in ind:
+                l1 = mutation(text[r])
+                text.pop(r)
+                text.insert(r,l1)
+            for r in range(len(ind)):
+                ind.pop(0)
+            for r in range(len(scorearr)):
+                scorearr.pop(0)
+            cnt=legalitycheck(text)
+        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        print(text)
+        print("\n")
+        
+        #scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+        maxscore.append(max(scorearr))
+
 crossoverAndSelection(5)
 
 file.close()
