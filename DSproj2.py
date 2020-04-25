@@ -40,7 +40,7 @@ text = []
 scorearr = []
 maxscore=[]
 text1=[]
-
+ind = []
 
 def sequencegenerator(cnt):
     for j in range(cnt):
@@ -48,9 +48,7 @@ def sequencegenerator(cnt):
         for i in range(matsize-1):
             t += random.choice(list_letter)
         text.append(t)
-        
-# initial set of sequences        
-sequencegenerator(10)
+    
 
 def getScore(matr,matr_angle,matr_visited):
     sco = 0
@@ -110,12 +108,6 @@ def rmvIllegal(ind,text):
     for i in range(len(ind)):
         ind.pop(0)
     
-#x=matsize
-#y=matsize
-#print(x,y)
-#matr_visited[x][y]=1
-#curr_ang = 180
-ind = []
 
 def legalitycheck(text):
     count = 0
@@ -166,35 +158,7 @@ def legalitycheck(text):
         scorearr.append(score)
     return count
 
-# adding more sequences to compensate for the removed sequences
-cnt = legalitycheck(text)
-while(cnt>0):
-    #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    rmvIllegal(ind,text)
-    ind = []
-    sequencegenerator(cnt)
-    cnt = legalitycheck(text)
-    
-
-#Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
-scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
-maxscore.append(scorearr[0])
-print(text)  
-print(scorearr)
-print("\n")
-
 # Mutation
-p = 0.001   
-p1=p
-p2=int(p1)
-c=0
-while(p2==0):
-    p1=p1*10;
-    c=c+1  
-    p2=int(p1) 
-prob1={'F':p,'R':p}
-prob2={'L':p,'R':p}
-prob3={'L':p,'F':p}
 
 def mutation(seq):
     s=[]
@@ -220,75 +184,105 @@ def mutation(seq):
         str += i
     return str
 
-
 # crossover and selection
-def crossoverAndSelection(n):
-    for p in range(n):
-        text1=[]
-        newtext = []
-        for i in range(len(text)-1):
-            newt = ''
-            for j in range(math.floor(len(text[i])/2)):
-                newt += text[i][j]
-            for k in range(math.floor(len(text[i])/2),len(text[i+1])):
-                newt += text[i+1][k]
-            newtext.append(newt)
-        cnt = legalitycheck(newtext) 
-        if len(ind)!=0:
-            #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-            rmvIllegal(ind,newtext)  
-        else:
-            for i in range(len(scorearr)):
-                scorearr.pop(0)
-        
-        if len(newtext)>=5:
-            x=5
-            for i in range(x):
-                text1.append(newtext[i])
-        else:
-            x=len(newtext)
-            for i in range(x):
-                text1.append(newtext[i])
-        for i in range(len(text)-x):
-            text1.append(text[i])
-        #cnt = legalitycheck(text1)
+def crossoverAndSelection():
+    #print(text)
+    text1=[]
+    newtext = []
+    for i in range(len(text)-1):
+        newt = ''
+        for j in range(math.floor(len(text[i])/2)):
+            newt += text[i][j]
+        for k in range(math.floor(len(text[i])/2),len(text[i+1])):
+            newt += text[i+1][k]
+        newtext.append(newt)
+    cnt = legalitycheck(newtext) 
+    if len(ind)!=0:
+        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        rmvIllegal(ind,newtext)  
+    else:
+        for i in range(len(scorearr)):
+            scorearr.pop(0)
+    
+    if len(newtext)>=5:
+        x=5
+        for i in range(x):
+            text1.append(newtext[i])
+    else:
+        x=len(newtext)
+        for i in range(x):
+            text1.append(newtext[i])
+    for i in range(len(text)-x):
+        text1.append(text[i])
+    #cnt = legalitycheck(text1)
+    #scorearr, text1 = (list(t) for t in zip(*sorted(zip(scorearr, text1), reverse=True)))
+    #maxscore.append(scorearr[0])
+    for i in range(len(text)):
+        text.pop(0)
+    
+    for i in text1:
+        text.append(i)
+    #print(text)
+    #print("\n")
+    for q in range(len(text)):
+        l = mutation(text[q])
+        text.pop(q)
+        text.insert(q,l)
+    cnt = legalitycheck(text)
+    while(cnt>0):
+        ind.reverse()
+        for r in ind:
+            l1 = mutation(text[r])
+            text.pop(r)
+            text.insert(r,l1)
+        for r in range(len(ind)):
+            ind.pop(0)
+        for r in range(len(scorearr)):
+            scorearr.pop(0)
+        cnt=legalitycheck(text)
 
-        #scorearr, text1 = (list(t) for t in zip(*sorted(zip(scorearr, text1), reverse=True)))
-        #maxscore.append(scorearr[0])
-        
-        #scorearr=[]
-        for i in range(len(text)):
-            text.pop(0)
-        
-        for i in text1:
-            text.append(i)
-        #print(text)
-        #print("\n")
-        for q in range(len(text)):
-            l = mutation(text[q])
-            text.pop(q)
-            text.insert(q,l)
-        cnt = legalitycheck(text)
-        while(cnt>0):
-            ind.reverse()
-            for r in ind:
-                l1 = mutation(text[r])
-                text.pop(r)
-                text.insert(r,l1)
-            for r in range(len(ind)):
-                ind.pop(0)
-            for r in range(len(scorearr)):
-                scorearr.pop(0)
-            cnt=legalitycheck(text)
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-        print(text)
-        print(scorearr)
-        print("\n")
-        
-        #scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
-        maxscore.append(max(scorearr))
+    maxscore.append(max(scorearr))
+    return text
 
-crossoverAndSelection(20)
+
+# initial set of sequences        
+sequencegenerator(10)
+# adding more sequences to compensate for the removed sequences
+cnt = legalitycheck(text)
+while(cnt>0):
+    #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    rmvIllegal(ind,text)
+    ind = []
+    sequencegenerator(cnt)
+    cnt = legalitycheck(text)
+    
+
+#Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
+scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+maxscore.append(scorearr[0])
+#print(text)  
+print("generation 0")
+print(scorearr)
+#print("\n")
+p = 0.001   
+p1=p
+p2=int(p1)
+c=0
+while(p2==0):
+    p1=p1*10;
+    c=c+1  
+    p2=int(p1) 
+prob1={'F':p,'R':p}
+prob2={'L':p,'R':p}
+prob3={'L':p,'F':p}
+for l in range(30):
+    text2 = crossoverAndSelection()
+    scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+    print("generation ",l+1)
+    #print(text)
+    print(scorearr)
+    #print("\n")
+    
 
 print("max scores:", maxscore)
 file.close()
