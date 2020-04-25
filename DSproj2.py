@@ -38,6 +38,10 @@ matr = [[0]*cols for _ in range(rows)]
 list_letter = ['L','F','R']
 text = []
 scorearr = []
+
+#Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
+scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+
 def sequencegenerator(cnt):
     for j in range(cnt):
         t=''
