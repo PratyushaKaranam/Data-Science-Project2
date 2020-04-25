@@ -7,7 +7,7 @@ Created on Thu Apr 23 14:54:17 2020
 
 import sys
 import random
-#import math
+import math
 arg = sys.argv
 #ip=sys.argv[1]
 
@@ -38,9 +38,9 @@ matr = [[0]*cols for _ in range(rows)]
 list_letter = ['L','F','R']
 text = []
 scorearr = []
+maxscore=[]
+text1=[]
 
-#Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
-scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
 
 def sequencegenerator(cnt):
     for j in range(cnt):
@@ -101,20 +101,23 @@ def getAngle(x):
     elif x=='F':
         return 0
 
-def rmvIllegal(ind):
+def rmvIllegal(ind,text):
     ind.reverse()
     for i in ind:
         text.pop(i)
     for j in range(len(scorearr)):
         scorearr.pop(0)
+    for i in range(len(ind)):
+        ind.pop(0)
     
 #x=matsize
 #y=matsize
 #print(x,y)
 #matr_visited[x][y]=1
 #curr_ang = 180
+ind = []
+
 def legalitycheck(text):
-    ind = []
     count = 0
     for i in range(len(text)):
         curr_ang=180
@@ -161,16 +164,65 @@ def legalitycheck(text):
         # calculate score
         score = getScore(matr,matr_angle,matr_visited)
         scorearr.append(score)
-    # removing illegal sequences if any
-    if len(ind)!=0:
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        rmvIllegal(ind)  
-        print(scorearr)
     return count
 
 # adding more sequences to compensate for the removed sequences
 cnt = legalitycheck(text)
 while(cnt>0):
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    rmvIllegal(ind,text)
+    ind = []
     sequencegenerator(cnt)
     cnt = legalitycheck(text)
+    
+    
+#Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
+scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+maxscore.append(scorearr[0])
+
+
+# crossover and selection
+def crossoverAndSelection(n):
+    for p in range(n):
+        text1=[]
+        newtext = []
+        for i in range(len(text)-1):
+            newt = ''
+            for j in range(math.floor(len(text[i])/2)):
+                newt += text[i][j]
+            for k in range(math.floor(len(text[i])/2),len(text[i+1])):
+                newt += text[i+1][k]
+            newtext.append(newt)
+        cnt = legalitycheck(newtext) 
+        if len(ind)!=0:
+            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            rmvIllegal(ind,newtext)  
+        else:
+            for i in range(len(scorearr)):
+                scorearr.pop(0)
+        
+        if len(newtext)>=5:
+            x=5
+            for i in range(x):
+                text1.append(newtext[i])
+        else:
+            x=len(newtext)
+            for i in range(x):
+                text1.append(newtext[i])
+        for i in range(len(text)-x):
+            text1.append(text[i])
+        cnt = legalitycheck(text1)
+
+        #scorearr, text1 = (list(t) for t in zip(*sorted(zip(scorearr, text1), reverse=True)))
+        #maxscore.append(scorearr[0])
+        
+        #scorearr=[]
+        for i in range(len(text)):
+            text.pop(0)
+        
+        for i in text1:
+            text.append(i)
+        print(text1)
+crossoverAndSelection(5)
+
 file.close()
