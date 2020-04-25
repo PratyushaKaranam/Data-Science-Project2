@@ -89,8 +89,8 @@ def getScore(matr,matr_angle,matr_visited):
                     if(matr[i+1][j]=='H' and matr_angle[i+1][j]!=270 and matr_visited[i+1][j]!=2):
                         sco = sco+1
                     matr_visited[i][j] = 2
-        #print("score=",sco)
-        return sco
+    #print("score=",sco)
+    return sco
                     
 
 def getAngle(x):
@@ -175,11 +175,13 @@ while(cnt>0):
     sequencegenerator(cnt)
     cnt = legalitycheck(text)
     
-print(text)  
-print("\n")
+
 #Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
 scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
 maxscore.append(scorearr[0])
+print(text)  
+print(scorearr)
+print("\n")
 
 # Mutation
 p = 0.001   
@@ -280,11 +282,13 @@ def crossoverAndSelection(n):
             cnt=legalitycheck(text)
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         print(text)
+        print(scorearr)
         print("\n")
         
         #scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
         maxscore.append(max(scorearr))
 
-crossoverAndSelection(5)
+crossoverAndSelection(20)
 
+print("max scores:", maxscore)
 file.close()
