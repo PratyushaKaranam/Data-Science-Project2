@@ -289,9 +289,9 @@ for i in range(len(maxscore)):
 
 plt.plot(index1, maxscore)
 
-plt.xlabel("Index")
+plt.xlabel("Generations")
 plt.ylabel("Maximum Score")
-plt.title("Maximum scores of indices")
+plt.title("Maximum scores for generations")
 plt.show()
 
 # AVG SCORES
@@ -301,9 +301,9 @@ for i in range(len(avgscore)):
 
 plt.plot(index2, avgscore)
 
-plt.xlabel("Index")
+plt.xlabel("Generations")
 plt.ylabel("Average Score")
-plt.title("Average scores of indices")
+plt.title("Average scores for generations")
 plt.show()
 
 # MAX SCORES TREND
@@ -319,9 +319,9 @@ for i in range(len(maxscore)-math.floor(len(maxscore)/2)):
 
 plt.plot(index3, arr3)
 
-plt.xlabel("Index")
-plt.ylabel("Average over half the max scores")
-plt.title("Trend")
+plt.xlabel("Sets of generations")
+plt.ylabel("Average of max scores")
+plt.title("Trend for Max Scores")
 plt.show()
 
 # AVG SCORES TREND
@@ -337,9 +337,9 @@ for i in range(len(avgscore)-math.floor(len(avgscore)/2)):
 
 plt.plot(index4, arr4)
 
-plt.xlabel("Index")
-plt.ylabel("Average over half the avg scores")
-plt.title("Trend")
+plt.xlabel("Sets of generations")
+plt.ylabel("Average of average scores")
+plt.title("Trend for average scores")
 plt.show()
     
 file.close()
