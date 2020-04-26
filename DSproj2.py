@@ -9,10 +9,19 @@ import matplotlib.pyplot as plt
 import sys
 import random
 import math
-arg = sys.argv
-#ip=sys.argv[1]
 
-ip = input()
+arg = sys.argv
+ip=sys.argv[1]
+n1 = sys.argv[2]
+n2 = sys.argv[3]
+p = sys.argv[4]
+
+#ip = input()
+
+n1=int(n1)
+n2=int(n2)
+p=float(p)
+print(n1,n2,p)
 
 ip+='.txt'
 file=open(ip,'r')
@@ -39,6 +48,7 @@ list_letter = ['L','F','R']
 text = []
 scorearr = []
 maxscore=[]
+avgscore = []
 text1=[]
 ind = []
 
@@ -204,8 +214,8 @@ def crossoverAndSelection():
         for i in range(len(scorearr)):
             scorearr.pop(0)
 
-    if len(newtext)>=5:
-        x=5
+    if len(newtext)>=0.05*n1:
+        x=math.ceil(0.05*n1)
         for i in range(x):
             text1.append(newtext[i])
     else:
@@ -242,11 +252,12 @@ def crossoverAndSelection():
         cnt=legalitycheck(text)
 
     maxscore.append(max(scorearr))
+    avgscore.append(sum(scorearr)/len(scorearr))
     return text
 
 
 # initial set of sequences
-sequencegenerator(10)
+sequencegenerator(n1)
 # adding more sequences to compensate for the removed sequences
 cnt = legalitycheck(text)
 while(cnt>0):
@@ -260,11 +271,12 @@ while(cnt>0):
 #Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
 scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
 maxscore.append(scorearr[0])
+avgscore.append(sum(scorearr)/len(scorearr))
 #print(text)
 print("generation 0")
 print(scorearr)
 #print("\n")
-p = 0.001
+#p = 0.001
 p1=p
 p2=int(p1)
 c=0
@@ -275,7 +287,7 @@ while(p2==0):
 prob1={'F':p,'R':p}
 prob2={'L':p,'R':p}
 prob3={'L':p,'F':p}
-for l in range(30):
+for l in range(n2):
     text2 = crossoverAndSelection()
     scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
     print("generation ",l+1)
@@ -285,15 +297,69 @@ for l in range(30):
 
 
 print("Max scores are:", maxscore)
+print("Avg scores are:", avgscore)
 
-index = []
+
+# graphs
+
+#max scores
+index1 = []
 for i in range(len(maxscore)):
-    index.append(i)
+    index1.append(i)
 
-plt.plot(index, maxscore)
+plt.plot(index1, maxscore)
 
 plt.xlabel("Index")
 plt.ylabel("Maximum Score")
 plt.title("Maximum scores of indices")
 plt.show()
+
+#avg scores
+index2 = []
+for i in range(len(avgscore)):
+    index2.append(i)
+
+plt.plot(index2, avgscore)
+
+plt.xlabel("Index")
+plt.ylabel("Average Score")
+plt.title("Average scores of indices")
+plt.show()
+
+#trend for max scores
+index3=[]
+arr3 = []
+for i in range(len(maxscore)-math.floor(len(maxscore)/2)):
+    g=0
+    for j in range(i,i+math.floor(len(maxscore)/2)):
+        g += maxscore[j]
+    g=g/math.floor(len(maxscore)/2)
+    arr3.append(g)
+    index3.append(i)
+
+plt.plot(index3, arr3)
+
+plt.xlabel("Index")
+plt.ylabel("Average over half the max scores")
+plt.title("Trend")
+plt.show()
+
+#trend for avg scores
+index4=[]
+arr4 = []
+for i in range(len(avgscore)-math.floor(len(avgscore)/2)):
+    g=0
+    for j in range(i,i+math.floor(len(avgscore)/2)):
+        g += avgscore[j]
+    g=g/math.floor(len(avgscore)/2)
+    arr4.append(g)
+    index4.append(i)
+
+plt.plot(index4, arr4)
+
+plt.xlabel("Index")
+plt.ylabel("Average over half the avg scores")
+plt.title("Trend")
+plt.show()
+    
 file.close()
