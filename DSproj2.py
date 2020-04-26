@@ -16,8 +16,6 @@ n1 = sys.argv[2]
 n2 = sys.argv[3]
 p = sys.argv[4]
 
-#ip = input()
-
 n1=int(n1)
 n2=int(n2)
 p=float(p)
@@ -41,8 +39,6 @@ for i in range(len(sequence1[0])):
 matsize = len(sequence1[0])
 rows,cols = (matsize*2,matsize*2)
 matr = [[0]*cols for _ in range(rows)]
-#matr_visited = [[0]*cols for _ in range(rows)]
-#matr1 = [[0]*cols for _ in range(rows)]
 
 list_letter = ['L','F','R']
 text = []
@@ -52,6 +48,9 @@ avgscore = []
 text1=[]
 ind = []
 
+# Functions
+
+# SEQUENCE GENERATOR
 def sequencegenerator(cnt):
     for j in range(cnt):
         t=''
@@ -60,6 +59,7 @@ def sequencegenerator(cnt):
         text.append(t)
 
 
+# SCORE GENERATOR
 def getScore(matr,matr_angle,matr_visited):
     sco = 0
     for i in range(len(matr)):
@@ -97,10 +97,10 @@ def getScore(matr,matr_angle,matr_visited):
                     if(matr[i+1][j]=='H' and matr_angle[i+1][j]!=270 and matr_visited[i+1][j]!=2):
                         sco = sco+1
                     matr_visited[i][j] = 2
-    #print("score=",sco)
     return sco
 
 
+# ANGLES FOR DIRECTIONS
 def getAngle(x):
     if x=='L':
         return -90
@@ -108,7 +108,9 @@ def getAngle(x):
         return 90
     elif x=='F':
         return 0
+    
 
+# ILLEGAL SEQUENCE REMOVER
 def rmvIllegal(ind,text):
     ind.reverse()
     for i in ind:
@@ -119,11 +121,11 @@ def rmvIllegal(ind,text):
         ind.pop(0)
 
 
+# TO CHECK FOR LEGAL SEQUENCES
 def legalitycheck(text):
     count = 0
     for i in range(len(text)):
         curr_ang=180
-        #print(matr_visited)
         matr_visited = [[0]*cols for _ in range(rows)]
         matr_angle = [[1]*cols for _ in range(rows)]
         matr = [[0]*cols for _ in range(rows)]
@@ -132,14 +134,9 @@ def legalitycheck(text):
         matr_visited[x][y]=1
         matr_angle[x][y]=curr_ang
         matr[x][y] = sequence[0]
-        #print(x,y)
-        #print("------------------------------")
-        #print(matr_visited)
-        #print("\n")
         for j in range(len(text[i])):
             # Assiginig angles to directions
             curr_ang += getAngle(text[i][j])
-
             # getting angles between 0 to 360
             if(curr_ang%360==0):
                 y=y-1
@@ -157,19 +154,16 @@ def legalitycheck(text):
                 matr[x][y]=sequence[j+1]
             elif(matr_visited[x][y]==1):
                 ind.append(i)
-                #print("collision at",i)
                 count = count + 1
                 break
-        #print(matr_angle)
-        #print(matr)
 
         # calculate score
         score = getScore(matr,matr_angle,matr_visited)
         scorearr.append(score)
     return count
 
-# Mutation
 
+# MUTATION 
 def mutation(seq):
     s=[]
     for i in seq:
@@ -194,7 +188,8 @@ def mutation(seq):
         str += i
     return str
 
-# crossover and selection
+
+# CROSSOVER AND SELECTION
 def crossoverAndSelection():
     #print(text)
     text1=[]
@@ -208,7 +203,6 @@ def crossoverAndSelection():
         newtext.append(newt)
     cnt = legalitycheck(newtext)
     if len(ind)!=0:
-        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         rmvIllegal(ind,newtext)
     else:
         for i in range(len(scorearr)):
@@ -222,23 +216,20 @@ def crossoverAndSelection():
         x=len(newtext)
         for i in range(x):
             text1.append(newtext[i])
+
     for i in range(len(text)-x):
         text1.append(text[i])
-    #cnt = legalitycheck(text1)
-    #scorearr, text1 = (list(t) for t in zip(*sorted(zip(scorearr, text1), reverse=True)))
-    #maxscore.append(scorearr[0])
     for i in range(len(text)):
         text.pop(0)
-
     for i in text1:
         text.append(i)
-    #print(text)
-    #print("\n")
+
     for q in range(len(text)):
         l = mutation(text[q])
         text.pop(q)
         text.insert(q,l)
     cnt = legalitycheck(text)
+
     while(cnt>0):
         ind.reverse()
         for r in ind:
@@ -261,48 +252,38 @@ sequencegenerator(n1)
 # adding more sequences to compensate for the removed sequences
 cnt = legalitycheck(text)
 while(cnt>0):
-    #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     rmvIllegal(ind,text)
     ind = []
     sequencegenerator(cnt)
     cnt = legalitycheck(text)
 
 
-#Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
+#SORTING THE INITIAL SET OF SEQUENCES
 scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+
 maxscore.append(scorearr[0])
 avgscore.append(sum(scorearr)/len(scorearr))
-#print(text)
-print("generation 0")
-print(scorearr)
-#print("\n")
-#p = 0.001
+
 p1=p
 p2=int(p1)
 c=0
 while(p2==0):
-    p1=p1*10;
+    p1=p1*10
     c=c+1
     p2=int(p1)
 prob1={'F':p,'R':p}
 prob2={'L':p,'R':p}
 prob3={'L':p,'F':p}
+
+#SORTING ALL MUTATED SEQUENCES
 for l in range(n2):
     text2 = crossoverAndSelection()
     scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
-    print("generation ",l+1)
-    #print(text)
-    print(scorearr)
-    #print("\n")
+    
 
+# GRAPHS
 
-print("Max scores are:", maxscore)
-print("Avg scores are:", avgscore)
-
-
-# graphs
-
-#max scores
+# MAX SCORES
 index1 = []
 for i in range(len(maxscore)):
     index1.append(i)
@@ -314,7 +295,7 @@ plt.ylabel("Maximum Score")
 plt.title("Maximum scores of indices")
 plt.show()
 
-#avg scores
+# AVG SCORES
 index2 = []
 for i in range(len(avgscore)):
     index2.append(i)
@@ -326,7 +307,7 @@ plt.ylabel("Average Score")
 plt.title("Average scores of indices")
 plt.show()
 
-#trend for max scores
+# MAX SCORES TREND
 index3=[]
 arr3 = []
 for i in range(len(maxscore)-math.floor(len(maxscore)/2)):
@@ -344,7 +325,7 @@ plt.ylabel("Average over half the max scores")
 plt.title("Trend")
 plt.show()
 
-#trend for avg scores
+# AVG SCORES TREND
 index4=[]
 arr4 = []
 for i in range(len(avgscore)-math.floor(len(avgscore)/2)):
