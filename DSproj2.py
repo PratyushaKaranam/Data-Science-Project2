@@ -2,15 +2,15 @@
 """
 Created on Thu Apr 23 14:54:17 2020
 
-@author: Pratyusha
+@authors: Pratyusha, Prerit
 """
 
+import matplotlib.pyplot as plt
 import sys
 import random
 import math
 arg = sys.argv
 #ip=sys.argv[1]
-
 
 ip = input()
 
@@ -19,14 +19,14 @@ file=open(ip,'r')
 sequence1=[]
 for index, line in enumerate(file.readlines()):
     if (index)%2 == 1:
-       sequence1.append(line) 
+       sequence1.append(line)
 
 sequence=[]
 for i in range(len(sequence1[0])):
     if(sequence1[0][i]=='A' or sequence1[0][i]=='I' or sequence1[0][i]=='L' or sequence1[0][i]=='M' or sequence1[0][i]=='F' or sequence1[0][i]=='P' or sequence1[0][i]=='W' or sequence1[0][i]=='Y' or sequence1[0][i]=='V'):
         sequence.append('H')
     else:
-       sequence.append('P') 
+       sequence.append('P')
 
 
 matsize = len(sequence1[0])
@@ -48,7 +48,7 @@ def sequencegenerator(cnt):
         for i in range(matsize-1):
             t += random.choice(list_letter)
         text.append(t)
-    
+
 
 def getScore(matr,matr_angle,matr_visited):
     sco = 0
@@ -57,7 +57,7 @@ def getScore(matr,matr_angle,matr_visited):
             if(matr[i][j] == 'H'):
                 if(matr_angle[i][j]==0):
                     if(matr[i-1][j]=='H' and matr_angle[i-1][j]!=90 and matr_visited[i-1][j]!=2):
-                        sco = sco+1 
+                        sco = sco+1
                     if(matr[i+1][j]=='H' and matr_angle[i+1][j]!=270 and matr_visited[i+1][j]!=2):
                         sco = sco+1
                     if(matr[i][j-1]=='H' and matr_angle[i][j-1]!=0 and matr_visited[i][j-1]!=2):
@@ -65,7 +65,7 @@ def getScore(matr,matr_angle,matr_visited):
                     matr_visited[i][j] = 2
                 elif(matr_angle[i][j]==90):
                     if(matr[i-1][j]=='H' and matr_angle[i-1][j]!=90 and matr_visited[i-1][j]!=2):
-                        sco = sco+1 
+                        sco = sco+1
                     if(matr[i][j+1]=='H' and matr_angle[i][j+1]!=180 and matr_visited[i][j+1]!=2):
                         sco = sco+1
                     if(matr[i][j-1]=='H' and matr_angle[i][j-1]!=0 and matr_visited[i][j-1]!=2):
@@ -73,7 +73,7 @@ def getScore(matr,matr_angle,matr_visited):
                     matr_visited[i][j] = 2
                 elif(matr_angle[i][j]==180):
                     if(matr[i-1][j]=='H' and matr_angle[i-1][j]!=90 and matr_visited[i-1][j]!=2):
-                        sco = sco+1 
+                        sco = sco+1
                     if(matr[i+1][j]=='H' and matr_angle[i+1][j]!=270 and matr_visited[i+1][j]!=2):
                         sco = sco+1
                     if(matr[i][j+1]=='H' and matr_angle[i][j+1]!=180 and matr_visited[i][j+1]!=2):
@@ -81,7 +81,7 @@ def getScore(matr,matr_angle,matr_visited):
                     matr_visited[i][j] = 2
                 elif(matr_angle[i][j]==270):
                     if(matr[i][j+1]=='H' and matr_angle[i][j+1]!=180 and matr_visited[i][j+1]!=2):
-                        sco = sco+1 
+                        sco = sco+1
                     if(matr[i][j-1]=='H' and matr_angle[i][j-1]!=0 and matr_visited[i][j-1]!=2):
                         sco = sco+1
                     if(matr[i+1][j]=='H' and matr_angle[i+1][j]!=270 and matr_visited[i+1][j]!=2):
@@ -89,7 +89,7 @@ def getScore(matr,matr_angle,matr_visited):
                     matr_visited[i][j] = 2
     #print("score=",sco)
     return sco
-                    
+
 
 def getAngle(x):
     if x=='L':
@@ -107,7 +107,7 @@ def rmvIllegal(ind,text):
         scorearr.pop(0)
     for i in range(len(ind)):
         ind.pop(0)
-    
+
 
 def legalitycheck(text):
     count = 0
@@ -127,10 +127,10 @@ def legalitycheck(text):
         #print(matr_visited)
         #print("\n")
         for j in range(len(text[i])):
-            # Assiginig angles to directions            
+            # Assiginig angles to directions
             curr_ang += getAngle(text[i][j])
-                    
-            # getting angles between 0 to 360 
+
+            # getting angles between 0 to 360
             if(curr_ang%360==0):
                 y=y-1
             elif(curr_ang%360==90):
@@ -152,7 +152,7 @@ def legalitycheck(text):
                 break
         #print(matr_angle)
         #print(matr)
-        
+
         # calculate score
         score = getScore(matr,matr_angle,matr_visited)
         scorearr.append(score)
@@ -196,14 +196,14 @@ def crossoverAndSelection():
         for k in range(math.floor(len(text[i])/2),len(text[i+1])):
             newt += text[i+1][k]
         newtext.append(newt)
-    cnt = legalitycheck(newtext) 
+    cnt = legalitycheck(newtext)
     if len(ind)!=0:
         #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        rmvIllegal(ind,newtext)  
+        rmvIllegal(ind,newtext)
     else:
         for i in range(len(scorearr)):
             scorearr.pop(0)
-    
+
     if len(newtext)>=5:
         x=5
         for i in range(x):
@@ -219,7 +219,7 @@ def crossoverAndSelection():
     #maxscore.append(scorearr[0])
     for i in range(len(text)):
         text.pop(0)
-    
+
     for i in text1:
         text.append(i)
     #print(text)
@@ -245,7 +245,7 @@ def crossoverAndSelection():
     return text
 
 
-# initial set of sequences        
+# initial set of sequences
 sequencegenerator(10)
 # adding more sequences to compensate for the removed sequences
 cnt = legalitycheck(text)
@@ -255,23 +255,23 @@ while(cnt>0):
     ind = []
     sequencegenerator(cnt)
     cnt = legalitycheck(text)
-    
+
 
 #Sorting the scorearr in descending order and the text list is sorted parrallely in accordance
 scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
 maxscore.append(scorearr[0])
-#print(text)  
+#print(text)
 print("generation 0")
 print(scorearr)
 #print("\n")
-p = 0.001   
+p = 0.001
 p1=p
 p2=int(p1)
 c=0
 while(p2==0):
     p1=p1*10;
-    c=c+1  
-    p2=int(p1) 
+    c=c+1
+    p2=int(p1)
 prob1={'F':p,'R':p}
 prob2={'L':p,'R':p}
 prob3={'L':p,'F':p}
@@ -282,7 +282,18 @@ for l in range(30):
     #print(text)
     print(scorearr)
     #print("\n")
-    
 
-print("max scores:", maxscore)
+
+print("Max scores are:", maxscore)
+
+index = []
+for i in range(len(maxscore)):
+    index.append(i)
+
+plt.plot(index, maxscore)
+
+plt.xlabel("Index")
+plt.ylabel("Maximum Score")
+plt.title("Maximum scores of indices")
+plt.show()
 file.close()
