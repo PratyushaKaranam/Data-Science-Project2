@@ -19,7 +19,6 @@ p = sys.argv[4]
 n1=int(n1)
 n2=int(n2)
 p=float(p)
-print(n1,n2,p)
 
 ip+='.txt'
 file=open(ip,'r')
