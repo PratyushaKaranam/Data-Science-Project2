@@ -259,6 +259,8 @@ while(cnt>0):
 
 #SORTING THE INITIAL SET OF SEQUENCES
 scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+print("Generation 0:")
+print(scorearr)
 
 maxscore.append(scorearr[0])
 avgscore.append(sum(scorearr)/len(scorearr))
@@ -278,6 +280,13 @@ prob3={'L':p,'F':p}
 for l in range(n2):
     text2 = crossoverAndSelection()
     scorearr, text = (list(t) for t in zip(*sorted(zip(scorearr, text), reverse=True)))
+    print("Generation ",l+1,":")
+    print(scorearr)
+
+print("\nMax Scores:")
+print(maxscore)
+print("Avg Scores:")
+print(avgscore)
     
 
 # GRAPHS
